@@ -1,0 +1,198 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Submit Report{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Report form specific styles */
+  .report-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .report-form {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .form-group select,
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  .form-group select:focus,
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+    min-height: 150px;
+  }
+  
+  .form-help-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: var(--dark-gray);
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .submit-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #218838;
+  }
+  
+  .back-button {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    display: inline-block;
+  }
+  
+  .back-button:hover {
+    background-color: var(--medium-gray);
+  }
+  
+  .alert-container {
+    margin-bottom: 20px;
+  }
+  
+  .alert {
+    padding: 12px 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  @media (max-width: 768px) {
+    .report-section {
+      padding: 15px;
+      width: 95%;
+    }
+    
+    .button-container {
+      flex-direction: column;
+    }
+    
+    .back-button {
+      text-align: center;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="report-section">
+  <h1 class="section-title">Submit a Report</h1>
+
+  <form method="post" class="report-form">
+    {% csrf_token %}
+    
+    {% for field in form %}
+    <div class="form-group">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      
+      {% if field.help_text %}
+        <small class="form-help-text">{{ field.help_text }}</small>
+      {% endif %}
+      
+      {% if field.errors %}
+        <div class="alert alert-danger">
+          <ul>
+            {{ field.errors.as_ul }}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  
+    
+    <div class="button-container">
+      <a href="{% url 'after_login_customer' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back
+      </a>
+      <button type="submit" class="submit-button">
+        <i class="fas fa-paper-plane"></i> Submit Report
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Report form page loaded successfully');
+  });
+</script>
+{% endblock %}

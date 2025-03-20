@@ -1,0 +1,131 @@
+{% extends "after_login_base_operator.html" %}
+{% load static %}
+
+{% block title %}GymHub - Operator Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Operator dashboard specific styles */
+  .dashboard-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+  }
+  
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .dashboard-card {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    height: 100%;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--dark-gray);
+    height: 100%;
+  }
+  
+  .card-icon {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 40px;
+  }
+  
+  .appt-icon {
+    background-color: #3498db;
+  }
+  
+  .reports-icon {
+    background-color: #e74c3c;
+  }
+  
+  .card-content {
+    padding: 25px;
+    text-align: center;
+  }
+  
+  .card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .card-desc {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  @media (max-width: 768px) {
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+  <h1 class="section-title">Operator Dashboard</h1>
+  
+  <div class="card-grid">
+    <div class="dashboard-card">
+      <a href="{% url 'after_login_operator_my_reservations' %}" class="card-link">
+        <div class="card-icon appt-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">My Appointments</h3>
+          <p class="card-desc">View and manage your scheduled appointments</p>
+        </div>
+      </a>
+    </div>
+    
+    <div class="dashboard-card">
+      <a href="{% url 'after_login_operator_my_reports' %}" class="card-link">
+        <div class="card-icon reports-icon">
+          <i class="fas fa-flag"></i>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">My Reports</h3>
+          <p class="card-desc">Access customer reports related to you</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Operator dashboard loaded successfully');
+  });
+</script>
+{% endblock %}
+

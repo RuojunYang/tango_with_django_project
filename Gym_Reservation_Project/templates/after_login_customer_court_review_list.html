@@ -1,0 +1,176 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Court Reviews{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Review list specific styles */
+  .review-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .court-card {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .court-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+  }
+  
+  .court-type {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #e2f5e8;
+    color: #28a745;
+    border-radius: 15px;
+    font-size: 14px;
+  }
+  
+  .review-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .review-item {
+    background-color: white;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+  }
+  
+  .review-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--light-gray);
+  }
+  
+  .review-author {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .review-date {
+    color: var(--dark-gray);
+    font-size: 14px;
+  }
+  
+  .review-content {
+    line-height: 1.5;
+    color: var(--text-color);
+  }
+  
+  .add-review-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .add-review-button:hover {
+    background-color: #218838;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--dark-gray);
+    font-style: italic;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .review-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .review-date {
+      margin-top: 5px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="review-section">
+  <h1 class="section-title">Court Reviews</h1>
+  
+  <div class="court-card">
+    <div class="court-name">Court: {{ court.id }}</div>
+    <div class="court-type">{{ court.get_court_type_display }}</div>
+  </div>
+  
+  {% if reviews %}
+    <ul class="review-list">
+      {% for review in reviews %}
+        <li class="review-item">
+          <div class="review-header">
+            <span class="review-author">
+              <i class="fas fa-user"></i> {{ review.user.username }}
+            </span>
+            <span class="review-date">
+              <i class="far fa-calendar-alt"></i> {{ review.created_at|date:"Y-m-d H:i" }}
+            </span>
+          </div>
+          <div class="review-content">
+            {{ review.content }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty-state">
+      <p>No reviews yet for this court. Be the first to share your experience!</p>
+    </div>
+  {% endif %}
+  
+  <a href="{% url 'after_login_customer_court_review_write' court.id %}" class="add-review-button">
+    <i class="fas fa-pen"></i> Write a Review
+  </a>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Court reviews page loaded successfully');
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends "after_login_base_operator.html" %}
+{% load static %}
+
+{% block title %}GymHub - My Reviews{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Reviews page specific styles */
+  .reviews-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .review-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .review-item {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+  }
+  
+  .review-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .review-coach {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .review-meta {
+    display: flex;
+    color: var(--dark-gray);
+    font-size: 14px;
+    gap: 15px;
+  }
+  
+  .review-user, .review-date {
+    display: flex;
+    align-items: center;
+  }
+  
+  .review-user i, .review-date i {
+    margin-right: 5px;
+    color: var(--primary-color);
+  }
+  
+  .review-content {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    color: var(--dark-gray);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--dark-gray);
+    font-style: italic;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .reviews-section {
+      padding: 15px;
+    }
+    
+    .review-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .review-meta {
+      margin-top: 10px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="reviews-section">
+  <h1 class="section-title">My Reviews</h1>
+  
+  <ul class="review-list">
+    {% for review in coach_reviews %}
+      <li class="review-item">
+        <div class="review-header">
+          <div class="review-coach">
+            Coach: {{ review.coach.username }}
+          </div>
+          <div class="review-meta">
+            <div class="review-user">
+              <i class="fas fa-user"></i> {{ review.user.username }}
+            </div>
+            <div class="review-date">
+              <i class="far fa-calendar-alt"></i> {{ review.created_at|date:"Y-m-d H:i" }}
+            </div>
+          </div>
+        </div>
+        <div class="review-content">
+          {{ review.content }}
+        </div>
+      </li>
+    {% empty %}
+      <div class="empty-state">
+        <p>You haven't received any reviews yet.</p>
+      </div>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Operator reviews page loaded successfully');
+  });
+</script>
+{% endblock %}

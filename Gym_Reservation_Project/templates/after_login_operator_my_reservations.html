@@ -1,0 +1,264 @@
+{% extends "after_login_base_operator.html" %}
+{% load static %}
+
+{% block title %}GymHub - My Scheduled Reservations{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Reservation list specific styles */
+  .reservation-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .tab-navigation {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 10px;
+  }
+  
+  .tab-link {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border-radius: 10px;
+    padding: 12px 25px;
+    margin-right: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+  
+  .tab-link i {
+    margin-right: 8px;
+  }
+  
+  .tab-link.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .tab-link:hover {
+    transform: translateY(-3px);
+  }
+  
+  .reservation-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .reservation-item {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+  }
+  
+  .reservation-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .coach-info {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .coach-info i {
+    margin-right: 8px;
+    color: #3498db;
+  }
+  
+  .coach-badges {
+    display: flex;
+    margin-left: 10px;
+    gap: 8px;
+  }
+  
+  .coach-type-badge, .coach-gender-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: normal;
+  }
+  
+  .coach-type-badge {
+    background-color: #e2f5e8;
+    color: #28a745;
+  }
+  
+  .coach-gender-badge {
+    background-color: #e2e6f5;
+    color: #4267b2;
+  }
+  
+  .reservation-info {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px 0;
+    color: var(--dark-gray);
+  }
+  
+  .reservation-info span {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .reservation-info i {
+    margin-right: 5px;
+    color: var(--primary-color);
+  }
+  
+  .reservation-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-weight: 600;
+  }
+  
+  .status-form {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .status-select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+  
+  .update-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: 600;
+  }
+  
+  .update-btn:hover {
+    background-color: #0f1c33;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--dark-gray);
+    font-style: italic;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .tab-navigation {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .tab-link {
+      margin-right: 0;
+    }
+    
+    .status-form {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .status-select {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="reservation-section">
+  <h1 class="section-title">My Reservations</h1>
+  
+  <div class="tab-navigation">
+    <a href="{% url 'after_login_operator_my_reservations' %}" class="tab-link active">
+      <i class="fas fa-calendar-check"></i> Scheduled Reservations
+    </a>
+    <a href="{% url 'after_login_operator_my_reservations_all' %}" class="tab-link">
+      <i class="fas fa-history"></i> All Reservations
+    </a>
+  </div>
+  
+  <ul class="reservation-list">
+    {% for reservation in reservations %}
+      <li class="reservation-item">
+        <div class="coach-info">
+          <i class="fas fa-user-tie"></i> Coach: {{ reservation.coach.name }}
+          <div class="coach-badges">
+            <span class="coach-type-badge">{{ reservation.coach.get_coach_type_display }}</span>
+            <span class="coach-gender-badge">{{ reservation.coach.get_coach_gender_display }}</span>
+          </div>
+        </div>
+        
+        <div class="reservation-info">
+          <span>
+            <i class="far fa-calendar-alt"></i> {{ reservation.appointment_start_time|date:"Y-m-d" }}
+          </span>
+          <span>
+            <i class="far fa-clock"></i> {{ reservation.appointment_start_time|time:"H:i" }} - {{ reservation.appointment_end_time|time:"H:i" }}
+          </span>
+          <span>
+            <i class="fas fa-info-circle"></i> Status: {{ reservation.status }}
+          </span>
+        </div>
+        
+        <form method="post" class="status-form">
+          {% csrf_token %}
+          <input type="hidden" name="appointment_id" value="{{ reservation.appointment_id }}">
+          <select name="status" class="status-select">
+            <option value="COMPLETED" {% if reservation.status == "COMPLETED" %}selected{% endif %}>Completed</option>
+            <option value="CANCELED" {% if reservation.status == "CANCELED" %}selected{% endif %}>Canceled</option>
+          </select>
+          <button type="submit" class="update-btn">
+            <i class="fas fa-sync-alt"></i> Update
+          </button>
+        </form>
+      </li>
+    {% empty %}
+      <div class="empty-state">
+        <p>You have no scheduled reservations.</p>
+      </div>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Operator reservations page loaded successfully');
+  });
+</script>
+{% endblock %}

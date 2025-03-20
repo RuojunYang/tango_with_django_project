@@ -1,0 +1,230 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Coach List{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Coach list specific styles */
+  .coach-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .coach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .coach-card {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .coach-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .coach-image-container {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    position: relative;
+  }
+  
+  .coach-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .coach-card:hover .coach-image {
+    transform: scale(1.05);
+  }
+  
+  .coach-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+  }
+  
+  .coach-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .coach-type-badge, .coach-gender-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+  }
+  
+  .coach-type-badge {
+    background-color: #e2f5e8;
+    color: #28a745;
+  }
+  
+  .coach-type-badge i {
+    margin-right: 5px;
+  }
+  
+  .coach-gender-badge {
+    background-color: #e2e6f5;
+    color: #4267b2;
+  }
+  
+  .coach-gender-badge i {
+    margin-right: 5px;
+  }
+  
+  .coach-time {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    color: var(--dark-gray);
+  }
+  
+  .coach-time i {
+    margin-right: 8px;
+    color: var(--primary-color);
+  }
+  
+  .coach-description {
+    margin: 10px 0;
+    color: var(--dark-gray);
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  
+  .coach-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .book-button, .review-button {
+    flex: 1;
+    display: inline-block;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .book-button {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .book-button:hover {
+    background-color: #218838;
+  }
+  
+  .review-button {
+    background-color: #f8f9fa;
+    color: var(--text-color);
+    border: 1px solid #ddd;
+  }
+  
+  .review-button:hover {
+    background-color: #e9ecef;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--dark-gray);
+    font-style: italic;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    grid-column: 1 / -1;
+  }
+  
+  @media (max-width: 768px) {
+    .coach-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="coach-section">
+  <h1 class="section-title">Our Professional Coaches</h1>
+  
+  <div class="coach-grid">
+    {% for coach in coaches %}
+      <div class="coach-card">
+        <div class="coach-image-container">
+          {% if coach.image %}
+            <img src="{{ coach.image.url }}" alt="{{ coach.name }}" class="coach-image">
+          {% else %}
+            <img src="{% static 'img/default-coach.jpg' %}" alt="{{ coach.name }}" class="coach-image">
+          {% endif %}
+        </div>
+        <div class="coach-name">{{ coach.name }}</div>
+        <div class="coach-info">
+          <span class="coach-type-badge">
+            <i class="fas fa-dumbbell"></i> {{ coach.get_coach_type_display }}
+          </span>
+          <span class="coach-gender-badge">
+            <i class="fas fa-venus-mars"></i> {{ coach.get_coach_gender_display }}
+          </span>
+        </div>
+        <div class="coach-time">
+          <i class="far fa-clock"></i> Available from {{ coach.work_start_time }} to {{ coach.work_end_time }}
+        </div>
+        <div class="coach-description">{{ coach.description }}</div>
+        <div class="coach-actions">
+          <a href="{% url 'after_login_customer_book_coach' coach.id %}" class="book-button">
+            <i class="fas fa-calendar-plus"></i> Book
+          </a>
+          <a href="{% url 'after_login_customer_coach_review_list' coach.id %}" class="review-button">
+            <i class="fas fa-star"></i> Reviews
+          </a>
+        </div>
+      </div>
+    {% empty %}
+      <div class="empty-state">
+        <p>No coaches available at the moment. Please check back later.</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Coach list page loaded successfully');
+  });
+</script>
+{% endblock %}

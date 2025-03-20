@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Select Login - GymHub{% endblock %}
+
+{% block content %}
+<style>
+    /* Main Styles */
+    :root {
+        --primary-color: #1a2a4a;
+        --accent-color: #ff6b6b;
+        --customer-color: #4cc9f0;
+        --coach-color: #4895ef;
+        --manager-color: #3f37c9;
+        --light-bg: #f9f9f9;
+        --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        --hover-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .login-page-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: calc(100vh - 150px);
+        padding: 2rem 1rem;
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        max-width: 600px;
+    }
+
+    .login-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .login-subtitle {
+        font-size: 1.1rem;
+        color: #6c757d;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .login-illustration {
+        width: 100%;
+        max-width: 550px;
+        margin-bottom: 2.5rem;
+    }
+
+    .login-options-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    .login-card {
+        flex: 1;
+        min-width: 300px;
+        max-width: 350px;
+        background-color: white;
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+    }
+
+    .login-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--hover-shadow);
+    }
+
+    .login-card-header {
+        height: 120px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-card-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background-color: white;
+        border-radius: 50% 50% 0 0;
+    }
+
+    .customer-header {
+        background: linear-gradient(135deg, #48cae4 0%, #0096c7 100%);
+    }
+
+    .coach-header {
+        background: linear-gradient(135deg, #4895ef 0%, #3a0ca3 100%);
+    }
+
+    .manager-header {
+        background: linear-gradient(135deg, #3f37c9 0%, #240046 100%);
+    }
+
+    .login-icon {
+        position: relative;
+        z-index: 2;
+        font-size: 3.5rem;
+        color: white;
+    }
+
+    .login-card-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .login-card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    .login-card-text {
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .login-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        background-color: #f8f9fa;
+        color: var(--primary-color);
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+
+    .customer-button:hover {
+        background-color: var(--customer-color);
+        color: white;
+    }
+
+    .coach-button:hover {
+        background-color: var(--coach-color);
+        color: white;
+    }
+
+    .manager-button:hover {
+        background-color: var(--manager-color);
+        color: white;
+    }
+
+    .login-button-arrow {
+        font-size: 0.8rem;
+        transition: transform 0.3s ease;
+    }
+
+    .login-card:hover .login-button-arrow {
+        transform: translateX(5px);
+    }
+
+    .shape-blob {
+        position: absolute;
+        z-index: -1;
+        opacity: 0.05;
+        border-radius: 50%;
+    }
+
+    .blob-1 {
+        width: 300px;
+        height: 300px;
+        background-color: var(--customer-color);
+        top: 20%;
+        left: 10%;
+    }
+
+    .blob-2 {
+        width: 200px;
+        height: 200px;
+        background-color: var(--coach-color);
+        bottom: 15%;
+        right: 15%;
+    }
+
+    .messages-container {
+        width: 100%;
+        max-width: 800px;
+        margin-bottom: 2rem;
+    }
+
+    .success-message {
+        background-color: rgba(40, 167, 69, 0.1);
+        border-left: 4px solid #28a745;
+        padding: 1rem;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .success-icon {
+        color: #28a745;
+    }
+
+    @media (max-width: 768px) {
+        .login-options-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-card {
+            width: 100%;
+        }
+
+        .login-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<!-- Background Shapes -->
+<div class="shape-blob blob-1"></div>
+<div class="shape-blob blob-2"></div>
+
+<div class="login-page-container">
+    <!-- Success Messages -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="success-message">
+            <i class="fas fa-check-circle success-icon"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Login Header -->
+    <div class="login-header">
+        <h1 class="login-title">Select Your Login</h1>
+        <p class="login-subtitle">Choose the appropriate login type for your role at GymHub</p>
+    </div>
+
+
+
+    <!-- Login Options -->
+    <div class="login-options-container">
+        <!-- Customer Login Card -->
+        <a href="{% url 'login_customer' %}" class="login-card">
+            <div class="login-card-header customer-header">
+                <i class="fas fa-user login-icon"></i>
+            </div>
+            <div class="login-card-body">
+                <h3 class="login-card-title">Customer</h3>
+                <p class="login-card-text">Access your fitness programs, track progress, and schedule training sessions</p>
+                <button class="login-button customer-button">
+                    Log In
+                    <i class="fas fa-arrow-right login-button-arrow"></i>
+                </button>
+            </div>
+        </a>
+
+        <!-- Coach Login Card -->
+        <a href="{% url 'login_operator' %}" class="login-card">
+            <div class="login-card-header coach-header">
+                <i class="fas fa-dumbbell login-icon"></i>
+            </div>
+            <div class="login-card-body">
+                <h3 class="login-card-title">Coach</h3>
+                <p class="login-card-text">Manage your customers, create workout plans, and track client progress</p>
+                <button class="login-button coach-button">
+                    Log In
+                    <i class="fas fa-arrow-right login-button-arrow"></i>
+                </button>
+            </div>
+        </a>
+
+        <!-- Manager Login Card -->
+        <a href="{% url 'login_manager' %}" class="login-card">
+            <div class="login-card-header manager-header">
+                <i class="fas fa-chart-line login-icon"></i>
+            </div>
+            <div class="login-card-body">
+                <h3 class="login-card-title">Manager</h3>
+                <p class="login-card-text">Access administrative tools, manage staff, and view facility analytics</p>
+                <button class="login-button manager-button">
+                    Log In
+                    <i class="fas fa-arrow-right login-button-arrow"></i>
+                </button>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

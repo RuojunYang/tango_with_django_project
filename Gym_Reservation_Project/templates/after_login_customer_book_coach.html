@@ -1,0 +1,189 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Book Coach{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Booking form specific styles */
+  .booking-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .coach-card {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .coach-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+  
+  .coach-info {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+  
+  .coach-detail {
+    display: flex;
+    align-items: center;
+    margin-right: 25px;
+    margin-bottom: 8px;
+    color: var(--dark-gray);
+  }
+  
+  .coach-detail i {
+    margin-right: 8px;
+    color: var(--primary-color);
+  }
+  
+  .booking-form {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .form-group select, 
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .booking-submit {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+  }
+  
+  .booking-submit:hover {
+    background-color: #28a745;
+  }
+  
+  .alert-container {
+    margin-bottom: 20px;
+  }
+  
+  .alert {
+    padding: 12px 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+    }
+    
+    .form-group {
+      width: 100%;
+      margin-right: 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="booking-section">
+  <h1 class="section-title">Book a Coach Session</h1>
+ 
+  <div class="coach-card">
+    <div class="coach-name">{{ coach.name }}</div>
+    <div class="coach-info">
+      <div class="coach-detail">
+        <i class="fas fa-dumbbell"></i> {{ coach.get_coach_type_display }}
+      </div>
+      <div class="coach-detail">
+        <i class="fas fa-venus-mars"></i> {{ coach.get_coach_gender_display }}
+      </div>
+      <div class="coach-detail">
+        <i class="far fa-clock"></i> Available: {{ coach.work_start_time }} to {{ coach.work_end_time }}
+      </div>
+    </div>
+  </div>
+  
+  <form class="booking-form" method="POST" action="{% url 'after_login_customer_book_coach' coach.id %}">
+    {% csrf_token %}
+    
+    <div class="form-group">
+      <label for="id_date">Select Date:</label>
+      {{ form.date }}
+    </div>
+    
+    <div class="form-row" style="display: flex; gap: 20px;">
+      <div class="form-group" style="flex: 1;">
+        <label for="id_start_time">Start Time:</label>
+        {{ form.start_time }}
+      </div>
+      
+      <div class="form-group" style="flex: 1;">
+        <label for="id_end_time">End Time:</label>
+        {{ form.end_time }}
+      </div>
+    </div>
+    
+    <button type="submit" class="booking-submit">
+      <i class="fas fa-calendar-check"></i> Book Session
+    </button>
+  </form>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Coach booking page loaded successfully');
+  });
+</script>
+{% endblock %}

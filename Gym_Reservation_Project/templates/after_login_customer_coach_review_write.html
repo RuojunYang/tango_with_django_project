@@ -1,0 +1,193 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Write Coach Review{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Review write specific styles */
+  .review-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .coach-card {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .coach-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+  }
+  
+  .coach-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .coach-type-badge, .coach-gender-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+  }
+  
+  .coach-type-badge {
+    background-color: #e2f5e8;
+    color: #28a745;
+  }
+  
+  .coach-gender-badge {
+    background-color: #e2e6f5;
+    color: #4267b2;
+  }
+  
+  .review-form {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    resize: vertical;
+    min-height: 150px;
+    transition: border-color 0.3s;
+  }
+  
+  .form-textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+  
+  .submit-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #218838;
+  }
+  
+  .back-button {
+    display: inline-block;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    text-align: center;
+  }
+  
+  .back-button:hover {
+    background-color: var(--medium-gray);
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+  }
+  
+  @media (max-width: 768px) {
+    .review-section {
+      padding: 15px;
+    }
+    
+    .button-container {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .back-button {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="review-section">
+  <h1 class="section-title">Write a Coach Review</h1>
+  
+  <div class="coach-card">
+    <div class="coach-name">Coach: {{ coach.name }}</div>
+    <div class="coach-info">
+      <span class="coach-type-badge">{{ coach.get_coach_type_display }}</span>
+      <span class="coach-gender-badge">{{ coach.get_coach_gender_display }}</span>
+    </div>
+  </div>
+  
+  <form class="review-form" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="form-label" for="content">Your review:</label>
+      <textarea class="form-textarea" id="content" name="content" rows="6" placeholder="Share your experience with this coach..." required></textarea>
+    </div>
+    
+    <div class="button-container">
+      <a href="{% url 'after_login_customer_coach_review_list' coach.id %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Review List
+      </a>
+      <button type="submit" class="submit-button">
+        <i class="fas fa-paper-plane"></i> Submit Review
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Coach review write page loaded successfully');
+  });
+</script>
+{% endblock %}

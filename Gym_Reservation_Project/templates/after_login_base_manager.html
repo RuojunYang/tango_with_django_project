@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% block title %}
+      GymHub Manager Dashboard
+    {% endblock %}
+  </title>
+  <link href="{% static 'css/cssbootstrap.min.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1a2a4a;
+      --accent-color: #ff6b6b;
+      --secondary-color: #39d353;
+      --light-gray: #f8f9fa;
+      --dark-gray: #4a4a4a;
+      --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      --content-bg: #ffffff;
+      --sidebar-width: 250px;
+      --header-height: 60px;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+    
+    /* Sidebar styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--primary-color);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      overflow-y: auto;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-brand {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    
+    .sidebar-brand span {
+      color: var(--accent-color);
+    }
+    
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+    
+    .nav-item {
+      margin-bottom: 5px;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      padding: 12px 20px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    
+    .nav-link.active {
+      background-color: var(--accent-color);
+      color: white;
+    }
+    
+    .nav-link i {
+      margin-right: 12px;
+      font-size: 18px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Main content wrapper */
+    .main-wrapper {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+    
+    /* Header styles */
+    .header {
+      height: var(--header-height);
+      background-color: white;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: var(--sidebar-width);
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    
+    .toggle-sidebar {
+      background: none;
+      border: none;
+      color: var(--dark-gray);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 5px;
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .toggle-sidebar:hover {
+      background-color: var(--light-gray);
+    }
+    
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+    
+    .user-name {
+      color: var(--dark-gray);
+      font-weight: 500;
+      margin-right: 10px;
+    }
+    
+    .logout-btn {
+      background-color: white;
+      color: var(--accent-color);
+      border: 1px solid var(--accent-color);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background-color: var(--accent-color);
+      color: white;
+    }
+    
+    /* Main content area */
+    .main-content {
+      padding: 30px 20px;
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+      background-color: #f5f7fa;
+    }
+    
+    /* Dashboard cards */
+    .dashboard-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: var(--box-shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    /* Success messages */
+    .messages-container {
+      margin-bottom: 20px;
+    }
+    
+    .success-message {
+      background-color: rgba(57, 211, 83, 0.1);
+      border-left: 4px solid var(--secondary-color);
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .success-icon {
+      color: var(--secondary-color);
+      margin-right: 10px;
+      font-size: 18px;
+    }
+    
+    .success-text {
+      color: #2a6d31;
+      font-weight: 500;
+    }
+    
+    /* Collapsed sidebar state */
+    body.sidebar-collapsed .sidebar {
+      width: 70px;
+    }
+    
+    body.sidebar-collapsed .sidebar-brand {
+      display: none;
+    }
+    
+    body.sidebar-collapsed .nav-link span {
+      display: none;
+    }
+    
+    body.sidebar-collapsed .nav-link {
+      justify-content: center;
+      padding: 12px;
+    }
+    
+    body.sidebar-collapsed .nav-link i {
+      margin-right: 0;
+      font-size: 20px;
+    }
+    
+    body.sidebar-collapsed .main-wrapper {
+      margin-left: 70px;
+    }
+    
+    body.sidebar-collapsed .header {
+      left: 70px;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .main-wrapper {
+        margin-left: 0;
+      }
+      
+      .header {
+        left: 0;
+      }
+      
+      body.sidebar-mobile-open .sidebar {
+        transform: translateX(0);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .header-title {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .user-name {
+        display: none;
+      }
+      
+      .header {
+        padding: 0 15px;
+      }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <a href="{% url 'after_login_manager' %}" class="sidebar-brand">
+        Gym<span>Hub</span> Manager
+      </a>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-item">
+        <a href="{% url 'after_login_manager' %}" class="nav-link {% if request.path == '/after_login_manager/' %}active{% endif %}">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
+      
+      <div class="nav-item">
+        <a href="{% url 'after_login_manage_coaches' %}" class="nav-link {% if '/coaches' in request.path %}active{% endif %}">
+          <i class="fas fa-user-tie"></i>
+          <span>Coaches</span>
+        </a>
+      </div>
+      
+      <div class="nav-item">
+        <a href="{% url 'after_login_manage_coach_reservations' %}" class="nav-link {% if '/reservations' in request.path %}active{% endif %}">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Reservations</span>
+        </a>
+      </div>
+      
+      <div class="nav-item">
+        <a href="{% url 'after_login_manage_scheduled_reports' %}" class="nav-link {% if '/reports' in request.path %}active{% endif %}">
+          <i class="fas fa-flag"></i>
+          <span>Reports</span>
+        </a>
+      </div>
+      
+      <div class="nav-item">
+        <a href="{% url 'after_login_manage_review_list' %}" class="nav-link {% if '/review' in request.path %}active{% endif %}">
+          <i class="fas fa-star"></i>
+          <span>Reviews</span>
+        </a>
+      </div>
+
+     
+    </div>
+  </div>
+
+  <!-- Main Wrapper -->
+  <div class="main-wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <button class="toggle-sidebar" id="toggleSidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h2 class="header-title">
+          {% block header_title %}GymHub Management Console{% endblock %}
+        </h2>
+      </div>
+      
+      <div class="header-right">
+        <div class="user-info">
+          <span class="user-name">{{ user.username }}</span>
+        </div>
+        
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="logout-btn">Logout</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      {% if messages %}
+        <div class="messages-container">
+          {% for message in messages %}
+            {% if "success" in message.tags %}
+              <div class="success-message">
+                <i class="fas fa-check-circle success-icon"></i>
+                <span class="success-text">{{ message }}</span>
+              </div>
+            {% elif "error" in message.tags %}
+              <div class="alert alert-danger" role="alert">
+                <ul class="errorlist">
+                  <li class="{{ message.tags }}">{{ message }}</li>
+                </ul>
+              </div>
+            {% else %}
+              <div class="alert alert-info" role="alert">
+                {{ message }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleSidebar = document.getElementById('toggleSidebar');
+      const body = document.body;
+      
+      // Toggle sidebar on button click
+      toggleSidebar.addEventListener('click', function() {
+        if (window.innerWidth < 992) {
+          body.classList.toggle('sidebar-mobile-open');
+        } else {
+          body.classList.toggle('sidebar-collapsed');
+        }
+      });
+      
+      // Handle window resize
+      window.addEventListener('resize', function() {
+        if (window.innerWidth < 992) {
+          body.classList.remove('sidebar-collapsed');
+          body.classList.remove('sidebar-mobile-open');
+        }
+      });
+    });
+  </script>
+  
+  {% block extra_js %}{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

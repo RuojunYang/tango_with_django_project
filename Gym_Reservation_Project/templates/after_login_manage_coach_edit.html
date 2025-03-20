@@ -1,0 +1,236 @@
+{% extends "after_login_base_manager.html" %}
+{% load static %}
+
+{% block title %}GymHub - Edit Coach{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Coach edit page styles */
+  .coach-edit-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .edit-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-color);
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: 5px;
+    background-color: white;
+    font-size: 16px;
+  }
+  
+  .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  
+  .form-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+  }
+  
+  .form-group-full {
+    grid-column: span 2;
+  }
+  
+  .current-image-container {
+    margin-bottom: 10px;
+  }
+  
+  .current-coach-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .form-actions {
+    grid-column: span 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .back-button {
+    display: inline-block;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .back-button:hover {
+    background-color: var(--medium-gray);
+  }
+  
+  .save-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .save-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .success-icon,
+  .error-icon {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    .edit-form {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-group-full {
+      grid-column: span 1;
+    }
+    
+    .form-actions {
+      grid-column: span 1;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .back-button,
+    .save-button {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="coach-edit-section">
+  <h1 class="section-title">Edit Coach: {{ coach.name }}</h1>
+  
+  <form method="post" enctype="multipart/form-data" class="edit-form">
+    {% csrf_token %}
+    
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="{{ coach.name }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="coach_type">Coach Type</label>
+      <select id="coach_type" name="coach_type" required>
+        <option value="FITNESS_TRAINER" {% if coach.coach_type == 'FITNESS_TRAINER' %}selected{% endif %}>Fitness Trainer</option>
+        <option value="GROUP_FITNESS_INSTRUCTOR" {% if coach.coach_type == 'GROUP_FITNESS_INSTRUCTOR' %}selected{% endif %}>Group Fitness Instructor</option>
+        <option value="FUNCTIONAL_TRAINER" {% if coach.coach_type == 'FUNCTIONAL_TRAINER' %}selected{% endif %}>Functional Trainer</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="coach_gender">Gender</label>
+      <select id="coach_gender" name="coach_gender" required>
+        <option value="MALE" {% if coach.coach_gender == 'MALE' %}selected{% endif %}>Male</option>
+        <option value="FEMALE" {% if coach.coach_gender == 'FEMALE' %}selected{% endif %}>Female</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="work_start_time">Work Start Time</label>
+      <input type="time" id="work_start_time" name="work_start_time" value="{{ coach.work_start_time|time:'H:i' }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="work_end_time">Work End Time</label>
+      <input type="time" id="work_end_time" name="work_end_time" value="{{ coach.work_end_time|time:'H:i' }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="image">Coach Image</label>
+      {% if coach.image %}
+        <div class="current-image-container">
+          <p>Current image:</p>
+          <img src="{{ coach.image.url }}" alt="{{ coach.name }}" class="current-coach-image">
+        </div>
+      {% endif %}
+      <input type="file" id="image" name="image" accept="image/*">
+    </div>
+    
+    <div class="form-group form-group-full">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="5">{{ coach.description }}</textarea>
+    </div>
+    
+    <div class="form-actions">
+      <a href="{% url 'after_login_manage_coaches' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Coaches
+      </a>
+      <button type="submit" class="save-button">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const editForm = document.querySelector('.edit-form');
+    
+    editForm.addEventListener('submit', function(e) {
+      const startTime = document.getElementById('work_start_time').value;
+      const endTime = document.getElementById('work_end_time').value;
+      
+      if (startTime >= endTime) {
+        e.preventDefault();
+        alert('Work end time must be after work start time');
+      }
+    });
+  });
+</script>
+{% endblock %} 

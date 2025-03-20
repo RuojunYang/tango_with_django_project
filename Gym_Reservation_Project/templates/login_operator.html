@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}GymHub - Coach Login{% endblock %}
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-container {
+        display: flex;
+        width: 900px;
+        max-width: 90%;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin: 0 auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .login-image {
+        flex: 1;
+        position: relative;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 40px;
+        color: white;
+        text-align: center;
+    }
+
+    .login-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('{% static "img/444.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.7);
+        z-index: -2;
+    }
+
+    .login-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+        z-index: -1;
+    }
+
+    .login-image h2 {
+        font-size: 2.4rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .login-image p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .login-form {
+        flex: 1;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .form-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    .form-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 10px 0;
+    }
+
+    .form-header p {
+        color: #777;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 15px;
+        transition: all 0.3s;
+        background: #f9fafb;
+    }
+
+    .form-control:focus {
+        border-color: #ff6b6b;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        outline: none;
+    }
+
+    .login-btn {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .login-btn:hover {
+        background: #ff5252;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+    }
+
+    .form-footer {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 14px;
+        color: #777;
+    }
+
+    .form-footer a {
+        color: #ff6b6b;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .form-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .alert {
+        background-color: #ffe8e8;
+        border-left: 4px solid #ff5252;
+        color: #d32f2f;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .alert ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .login-container {
+            flex-direction: column;
+            min-height: 0;
+            position: relative;
+            transform: none;
+            top: auto;
+            left: auto;
+            margin: 20px auto;
+        }
+
+        .login-image {
+            min-height: 200px;
+            padding: 30px;
+        }
+
+        .login-form {
+            padding: 40px 30px;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-image">
+        <h2>Welcome to GymHub</h2>
+        <p>Coach portal for fitness professionals. Sign in to access your training schedule and client profiles.</p>
+    </div>
+
+    <div class="login-form">
+        <div class="form-header">
+            <h1>Coach Login</h1>
+            <p>Please enter your information to continue</p>
+        </div>
+
+        {% if messages %}
+            <div class="alert" role="alert">
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form action="{% url 'login_operator' %}" method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                {{ form.username|default:'<input type="text" name="username" id="id_username" class="form-control" placeholder="Enter your username" required>' }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                {{ form.password|default:'<input type="password" name="password" id="id_password" class="form-control" placeholder="Enter your password" required>' }}
+            </div>
+
+            <button type="submit" class="login-btn">Sign In</button>
+
+            <div class="form-footer">
+                Need help? Contact your manager
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

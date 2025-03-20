@@ -1,0 +1,368 @@
+{% extends "after_login_base_manager.html" %}
+{% load static %}
+
+{% block title %}GymHub - Coach Reservations{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Coach Reservations page specific styles */
+  .reservations-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .tab-navigation {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 10px;
+  }
+  
+  .tab-link {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border-radius: 10px;
+    padding: 12px 25px;
+    margin-right: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+  
+  .tab-link i {
+    margin-right: 8px;
+  }
+  
+  .tab-link.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .tab-link:hover {
+    transform: translateY(-3px);
+  }
+  
+  .filter-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .filter-select {
+    padding: 12px 15px;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    min-width: 150px;
+    font-size: 14px;
+    outline: none;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .date-input {
+    padding: 12px 15px;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .filter-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+  }
+  
+  .filter-button:hover {
+    background-color: var(--primary-color-dark);
+  }
+  
+  .filter-button i {
+    margin-right: 5px;
+  }
+  
+  .reservations-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .reservations-table th {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .reservations-table td {
+    padding: 15px;
+    border-bottom: 1px solid white;
+  }
+  
+  .reservations-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .reservations-table tr:hover td {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .status-scheduled {
+    background-color: #FFF3CD;
+    color: #856404;
+  }
+  
+  .status-completed {
+    background-color: #D4EDDA;
+    color: #155724;
+  }
+  
+  .status-cancelled {
+    background-color: #F8D7DA;
+    color: #721C24;
+  }
+  
+  .action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .action-button i {
+    margin-right: 5px;
+  }
+  
+  .view-button {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .view-button:hover {
+    background-color: var(--primary-color-dark);
+  }
+  
+  .update-button {
+    background-color: #17a2b8;
+    color: white;
+  }
+  
+  .update-button:hover {
+    background-color: #138496;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--dark-gray);
+    font-style: italic;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+  }
+  
+  .pagination-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .pagination-link.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .pagination-link:hover:not(.active) {
+    transform: translateY(-3px);
+    background-color: var(--light-gray-hover);
+  }
+  
+  @media (max-width: 768px) {
+    .tab-navigation {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .tab-link {
+      margin-right: 0;
+    }
+    
+    .filter-controls {
+      flex-direction: column;
+    }
+    
+    .reservations-table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="reservations-section">
+  <h1 class="section-title">Coach Reservations Management</h1>
+  
+  <div class="tab-navigation">
+    <a href="{% url 'after_login_manage_court_reservations' %}" class="tab-link">
+      <i class="fas fa-volleyball-ball"></i> Court Reservations
+    </a>
+    <a href="{% url 'after_login_manage_coach_reservations' %}" class="tab-link active">
+      <i class="fas fa-user-tie"></i> Coach Reservations
+    </a>
+  </div>
+  
+  <form method="get" class="filter-controls">
+    <select name="coach_id" class="filter-select">
+      <option value="">All Coaches</option>
+      {% for coach in coaches %}
+        <option value="{{ coach.id }}" {% if selected_coach_id == coach.id %}selected{% endif %}>
+          {{ coach.name }} - {{ coach.get_coach_type_display }}
+        </option>
+      {% endfor %}
+    </select>
+    
+    <select name="status" class="filter-select">
+      <option value="">All Statuses</option>
+      <option value="scheduled" {% if selected_status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+      <option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>Completed</option>
+      <option value="cancelled" {% if selected_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+    </select>
+    
+    <input type="date" name="date" class="date-input" value="{{ selected_date|date:'Y-m-d' }}" placeholder="Select Date">
+    
+    <button type="submit" class="filter-button">
+      <i class="fas fa-filter"></i> Filter
+    </button>
+  </form>
+  
+  {% if reservations %}
+    <table class="reservations-table">
+      <thead>
+        <tr>
+          <th>Coach</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reservation in reservations %}
+          <tr>
+            <td>{{ reservation.coach.name }} ({{ reservation.coach.get_coach_type_display }})</td>
+            <td>{{ reservation.user.first_name }} {{ reservation.user.last_name }}</td>
+            <td>{{ reservation.date|date:"Y-m-d" }}</td>
+            <td>{{ reservation.start_time }} - {{ reservation.end_time }}</td>
+            <td>
+              <span class="status-badge {% if reservation.status == 'scheduled' %}status-scheduled{% elif reservation.status == 'completed' %}status-completed{% elif reservation.status == 'cancelled' %}status-cancelled{% endif %}">
+                {{ reservation.get_status_display }}
+              </span>
+            </td>
+            <td>
+              <form method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="appointment_id" value="{{ reservation.appointment_id }}">
+                <select name="status" class="filter-select" style="min-width: auto; padding: 5px 10px; margin-right: 5px;">
+                  <option value="COMPLETED" {% if reservation.status == 'COMPLETED' %}selected{% endif %}>complete</option>
+                  <option value="CANCELED" {% if reservation.status == 'CANCELED' %}selected{% endif %}>cancel</option>
+                </select>
+                <button type="submit" class="action-button update-button">
+                  <i class="fas fa-save"></i> update
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <p>No coach reservations found matching your criteria.</p>
+    </div>
+  {% endif %}
+  
+  {% if reservations.paginator.num_pages > 1 %}
+    <div class="pagination">
+      {% if reservations.has_previous %}
+        <a href="?page=1{% if selected_coach_id %}&coach_id={{ selected_coach_id }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_date %}&date={{ selected_date|date:'Y-m-d' }}{% endif %}" class="pagination-link">1</a>
+        {% if reservations.previous_page_number != 1 %}
+          <a href="?page={{ reservations.previous_page_number }}{% if selected_coach_id %}&coach_id={{ selected_coach_id }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_date %}&date={{ selected_date|date:'Y-m-d' }}{% endif %}" class="pagination-link">{{ reservations.previous_page_number }}</a>
+        {% endif %}
+      {% endif %}
+      
+      <a href="#" class="pagination-link active">{{ reservations.number }}</a>
+      
+      {% if reservations.has_next %}
+        {% if reservations.next_page_number != reservations.paginator.num_pages %}
+          <a href="?page={{ reservations.next_page_number }}{% if selected_coach_id %}&coach_id={{ selected_coach_id }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_date %}&date={{ selected_date|date:'Y-m-d' }}{% endif %}" class="pagination-link">{{ reservations.next_page_number }}</a>
+        {% endif %}
+        <a href="?page={{ reservations.paginator.num_pages }}{% if selected_coach_id %}&coach_id={{ selected_coach_id }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_date %}&date={{ selected_date|date:'Y-m-d' }}{% endif %}" class="pagination-link">{{ reservations.paginator.num_pages }}</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Coach reservations management page loaded successfully');
+  });
+</script>
+{% endblock %}

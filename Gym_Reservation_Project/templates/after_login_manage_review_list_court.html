@@ -1,0 +1,77 @@
+{% extends "after_login_base_manager.html" %}
+{% load static %}
+
+{% block title %}GymHub - Reviews Management{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/reviews.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<section class="reviews-section">
+  <h1 class="section-title">Reviews Management</h1>
+  
+  <div class="tab-navigation">
+    <a href="{% url 'after_login_manage_review_list' %}" class="tab-link">
+      <i class="fas fa-volleyball-ball"></i> All Reviews
+    </a>
+    <a href="{% url 'after_login_manage_review_list_coach' %}" class="tab-link">
+      <i class="fas fa-user-tie"></i> Coach Reviews
+    </a>
+    <a href="{% url 'after_login_manage_review_list_court' %}" class="tab-link active">
+      <i class="fas fa-table-tennis"></i> Court Reviews
+    </a>
+  </div>
+  
+  <ul class="review-list">
+    {% for review in court_reviews %}
+      <li class="review-item">
+        <div class="review-header">
+          <div class="review-type">
+            <span class="review-subject">Court Review: Court #{{ review.court.id }}</span>
+            <div>by {{ review.user.username }}</div>
+          </div>
+        </div>
+        
+        <div class="review-content">
+          {{ review.content }}
+        </div>
+        
+        <div class="review-meta">
+          <div class="review-date">
+            <i class="far fa-calendar-alt"></i> Posted on: {{ review.created_at|date:"Y-m-d H:i" }}
+          </div>
+        </div>
+      </li>
+    {% empty %}
+      <div class="empty-state">
+        <p>No court reviews found matching your criteria.</p>
+      </div>
+    {% endfor %}
+  </ul>
+  
+  {% if reviews.paginator.num_pages > 1 %}
+    <div class="pagination">
+      {% if reviews.has_previous %}
+        <a href="?page=1{% if review_type %}&type={{ review_type }}{% endif %}" class="pagination-link">1</a>
+        {% if reviews.previous_page_number != 1 %}
+          <a href="?page={{ reviews.previous_page_number }}{% if review_type %}&type={{ review_type }}{% endif %}" class="pagination-link">{{ reviews.previous_page_number }}</a>
+        {% endif %}
+      {% endif %}
+      
+      <a href="#" class="pagination-link active">{{ reviews.number }}</a>
+      
+      {% if reviews.has_next %}
+        {% if reviews.next_page_number != reviews.paginator.num_pages %}
+          <a href="?page={{ reviews.next_page_number }}{% if review_type %}&type={{ review_type }}{% endif %}" class="pagination-link">{{ reviews.next_page_number }}</a>
+        {% endif %}
+        <a href="?page={{ reviews.paginator.num_pages }}{% if review_type %}&type={{ review_type }}{% endif %}" class="pagination-link">{{ reviews.paginator.num_pages }}</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/review.js' %}"></script>
+{% endblock %}

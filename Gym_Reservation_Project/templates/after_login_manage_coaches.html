@@ -1,0 +1,252 @@
+{% extends "after_login_base_manager.html" %}
+{% load static %}
+
+{% block title %}GymHub - Manage Coaches{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Coach management page styles */
+  .coaches-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .add-coach-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  
+  .add-coach-btn i {
+    margin-right: 8px;
+  }
+  
+  .add-coach-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+  
+  .coaches-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .coaches-table th,
+  .coaches-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--light-gray);
+  }
+  
+  .coaches-table th {
+    background-color: var(--light-gray);
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+  .coaches-table tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .coach-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .coach-description {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .action-button {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .edit-button {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .edit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .delete-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .delete-button:hover {
+    background-color: #bd2130;
+  }
+  
+  .back-button {
+    display: inline-block;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .back-button:hover {
+    background-color: var(--medium-gray);
+  }
+  
+  @media (max-width: 992px) {
+    .coaches-table {
+      font-size: 14px;
+    }
+    
+    .coach-description {
+      max-width: 200px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .coaches-table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    .coaches-table th,
+    .coaches-table td {
+      padding: 8px 10px;
+    }
+    
+    .coach-description {
+      max-width: 150px;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .action-button {
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="coaches-section">
+  <div class="section-header">
+    <h1 class="section-title">Manage Coaches</h1>
+    <a href="{% url 'after_login_manager_signup_operator' %}" class="add-coach-btn">
+      <i class="fas fa-plus"></i> Add New Coach
+    </a>
+  </div>
+
+  
+  <table class="coaches-table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Gender</th>
+        <th>Working Hours</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for coach in coaches %}
+        <tr>
+          <td>
+            {% if coach.image %}
+              <img src="{{ coach.image.url }}" alt="{{ coach.name }}" class="coach-image">
+            {% else %}
+              <div class="no-image">No Image</div>
+            {% endif %}
+          </td>
+          <td>{{ coach.name }}</td>
+          <td>{{ coach.get_coach_type_display }}</td>
+          <td>{{ coach.get_coach_gender_display }}</td>
+          <td>{{ coach.work_start_time|time:"H:i" }} - {{ coach.work_end_time|time:"H:i" }}</td>
+          <td class="coach-description" title="{{ coach.description }}">{{ coach.description }}</td>
+          <td>
+            <div class="action-buttons">
+              <a href="{% url 'after_login_manage_coach_edit' coach.id %}" class="action-button edit-button">
+                <i class="fas fa-edit"></i> Edit
+              </a>
+              <a href="{% url 'after_login_manage_coach_delete' coach.id %}" class="action-button delete-button" onclick="return confirm('Are you sure you want to delete this coach?');">
+                <i class="fas fa-trash"></i> Delete
+              </a>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 20px;">No coaches found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <a href="{% url 'after_login_manager' %}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+  </a>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Coaches management page loaded successfully');
+  });
+</script>
+{% endblock %} 

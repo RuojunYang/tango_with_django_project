@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gym Hub - Let's Get Started</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* Background image will be added later */
+            background-color: #333;
+            background-image: url('{% static "img/222.jpg" %}'); /* This is a placeholder - replace with your image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        /* Main container - now with white background */
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header styles */
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eaeaea;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a2a4a;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #ff6b6b;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-login {
+            background-color: transparent;
+            border: 2px solid #1a2a4a;
+            color: #1a2a4a;
+        }
+
+        .btn-login:hover {
+            background-color: #1a2a4a;
+            color: white;
+        }
+
+        .btn-signup {
+            background-color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+            color: white;
+        }
+
+        .btn-signup:hover {
+            background-color: #e95a5a;
+            border-color: #e95a5a;
+        }
+
+        /* Hero section styles */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            padding: 20px 0;
+        }
+
+        .hero h1 {
+            font-size: 30px;
+            margin-bottom: 20px;
+            color: #1a2a4a;
+        }
+
+        .hero h2 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #1a2a4a;
+            font-weight: 400;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            color: #4a4a4a;
+        }
+
+        .cta-button {
+            padding: 16px 36px;
+            font-size: 18px;
+            border-radius: 30px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background-color: #e95a5a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Messages styling - for Django messages */
+        .messages {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            color: #151515;
+            border-left: 4px solid #ff6b6b;
+            z-index: 100;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 30px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero h2 {
+                font-size: 24px;
+            }
+
+            .hero p {
+                font-size: 16px;
+                padding: 0 15px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero h2 {
+                font-size: 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="#" class="logo">The Gym<span>Hub</span></a>
+            <div class="nav-buttons">
+                <a href="{% url 'select_login' %}" class="btn btn-login">Login</a>
+                <a href="{% url 'signup' %}" class="btn btn-signup">Sign Up</a>
+            </div>
+        </header>
+
+        <section class="hero">
+
+            <h1>Welcome to The Gym Hub</h1>
+            <h2>Let's Get Started</h2>
+            <p>Your journey to a healthier lifestyle begins here!</p>
+            <a href="{% url 'select_login' %}" class="cta-button">Start Your Journey</a>
+        </section>
+    </div>
+
+    <!-- For Django messages -->
+    {% if messages %}
+    <div class="messages">
+        <ul class="errorlist">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</body>
+</html>

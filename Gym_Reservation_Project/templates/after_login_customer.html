@@ -1,0 +1,235 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Dashboard specific styles */
+  .dashboard-header {
+    margin-bottom: 30px;
+  }
+  
+  .dashboard-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+  
+  .dashboard-subtitle {
+    font-size: 16px;
+    color: var(--dark-gray);
+    max-width: 600px;
+  }
+  
+  /* Feature cards section */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .feature-card {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    height: 250px;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+  
+  .feature-card:hover::before {
+    opacity: 0.9;
+  }
+  
+  .coach-card::before {
+    background-color: rgba(41, 128, 185, 0.8); /* 蓝色 */
+  }
+  
+  .court-card::before {
+    background-color: rgba(46, 204, 113, 0.8); /* 绿色 */
+  }
+  
+  .payment-card::before {
+    background-color: rgba(155, 89, 182, 0.8); /* 紫色 */
+  }
+  
+  .report-card::before {
+    background-color: rgba(231, 76, 60, 0.8); /* 红色 */
+  }
+  
+  .feature-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .feature-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .feature-icon {
+    font-size: 48px;
+    color: white;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  .feature-card:hover .feature-icon {
+    transform: scale(1.1);
+  }
+  
+  .feature-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 15px;
+  }
+  
+  .feature-description {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(5px);
+    opacity: 0.8;
+  }
+  
+  .feature-card:hover .feature-description {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  /* Quick stats section */
+  .stats-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .stats-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .stat-card {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: var(--dark-gray);
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-header">
+  <h1 class="dashboard-title">Welcome to your GymHub Dashboard</h1>
+</section>
+
+<section class="features-grid">
+  <!-- Coach List Card -->
+  <a href="{% url 'after_login_customer_coach_list' %}" class="feature-card coach-card">
+    <div class="feature-content">
+      <i class="fas fa-user-tie feature-icon"></i>
+      <h3 class="feature-title">Coach List</h3>
+      <p class="feature-description">Browse our professional coaches and book personal training sessions</p>
+    </div>
+  </a>
+  
+  <!-- Court List Card -->
+  <a href="{% url 'after_login_customer_court_list' %}" class="feature-card court-card">
+    <div class="feature-content">
+      <i class="fas fa-table-tennis feature-icon"></i>
+      <h3 class="feature-title">Court List</h3>
+      <p class="feature-description">View and reserve available courts for your activities</p>
+    </div>
+  </a>
+  
+  <!-- Report Card -->
+  <a href="{% url 'after_login_customer_report' %}" class="feature-card report-card">
+    <div class="feature-content">
+      <i class="fas fa-chart-line feature-icon"></i>
+      <h3 class="feature-title">Reports</h3>
+      <p class="feature-description">Track your progress and view activity history</p>
+    </div>
+  </a>
+  
+  <!-- Profile Card -->
+  <a href="{% url 'after_login_customer_my_profile' %}" class="feature-card payment-card">
+    <div class="feature-content">
+      <i class="fas fa-user feature-icon"></i>
+      <h3 class="feature-title">My Profile</h3>
+      <p class="feature-description">View and edit your profile information</p>
+    </div>
+  </a>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Optional: Add any JavaScript functionality here
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Dashboard loaded successfully');
+  });
+</script>
+{% endblock %}

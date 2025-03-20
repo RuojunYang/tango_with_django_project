@@ -1,0 +1,173 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - My Reviews{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Reviews page specific styles */
+  .reviews-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .subsection-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 25px 0 15px 0;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--light-gray);
+  }
+  
+  .review-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .review-item {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+  }
+  
+  .review-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .review-target {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .review-meta {
+    display: flex;
+    color: var(--dark-gray);
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .review-meta-item {
+    margin-right: 15px;
+  }
+  
+  .review-meta-item i {
+    margin-right: 5px;
+    color: var(--primary-color);
+  }
+  
+  .review-content {
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 20px;
+    color: var(--dark-gray);
+    font-style: italic;
+  }
+  
+  @media (max-width: 768px) {
+    .reviews-section {
+      padding: 15px;
+    }
+    
+    .review-header {
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="reviews-section">
+  <h1 class="section-title">My Reviews</h1>
+  
+  <h2 class="subsection-title">Coach Reviews</h2>
+  <ul class="review-list">
+    {% for review in coach_reviews %}
+      <li class="review-item">
+        <div class="review-header">
+          <div class="review-target">
+            Coach: {{ review.coach.username }}
+          </div>
+        </div>
+        <div class="review-meta">
+          <div class="review-meta-item">
+            <i class="fas fa-user"></i> {{ review.user.username }}
+          </div>
+          <div class="review-meta-item">
+            <i class="far fa-calendar-alt"></i> {{ review.created_at|date:"Y-m-d H:i" }}
+          </div>
+        </div>
+        <div class="review-content">
+          {{ review.content }}
+        </div>
+      </li>
+    {% empty %}
+      <div class="empty-state">
+        <p>You haven't written any coach reviews yet.</p>
+      </div>
+    {% endfor %}
+  </ul>
+  
+  <h2 class="subsection-title">Court Reviews</h2>
+  <ul class="review-list">
+    {% for review in court_reviews %}
+      <li class="review-item">
+        <div class="review-header">
+          <div class="review-target">
+            Court: {{ review.court.username }}
+          </div>
+        </div>
+        <div class="review-meta">
+          <div class="review-meta-item">
+            <i class="fas fa-user"></i> {{ review.user.username }}
+          </div>
+          <div class="review-meta-item">
+            <i class="far fa-calendar-alt"></i> {{ review.created_at|date:"Y-m-d H:i" }}
+          </div>
+        </div>
+        <div class="review-content">
+          {{ review.content }}
+        </div>
+      </li>
+    {% empty %}
+      <div class="empty-state">
+        <p>You haven't written any court reviews yet.</p>
+      </div>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Reviews page loaded successfully');
+  });
+</script>
+{% endblock %}

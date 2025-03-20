@@ -1,0 +1,193 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Scheduled Court Reservations{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Reservation list specific styles */
+  .reservation-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .tab-navigation {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 10px;
+  }
+  
+  .tab-link {
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border-radius: 10px;
+    padding: 12px 25px;
+    margin-right: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .tab-link.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .tab-link:hover {
+    transform: translateY(-3px);
+  }
+  
+  .reservation-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .reservation-item {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .reservation-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reservation-details {
+    flex: 1;
+  }
+  
+  .reservation-court {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+  }
+  
+  .reservation-info {
+    display: flex;
+    margin: 5px 0;
+    color: var(--dark-gray);
+  }
+  
+  .reservation-info span {
+    margin-right: 20px;
+  }
+  
+  .cancel-form button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .cancel-form button:hover {
+    background-color: #c82333;
+  }
+  
+  .back-button {
+    display: inline-block;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .back-button:hover {
+    background-color: var(--medium-gray);
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--dark-gray);
+    font-style: italic;
+  }
+  
+  @media (max-width: 768px) {
+    .reservation-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .cancel-form {
+      margin-top: 15px;
+      align-self: flex-end;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="reservation-section">
+  <h1 class="section-title">My Court Reservations</h1>
+  
+  <div class="tab-navigation">
+    <a href="{% url 'after_login_customer_my_profile_court_reservation_scheduled' %}" class="tab-link active">Scheduled Reservations</a>
+    <a href="{% url 'after_login_customer_my_profile_court_reservation_all' %}" class="tab-link">All Reservations</a>
+  </div>
+  
+  <ul class="reservation-list">
+    {% for reservation in reservations %}
+      <li class="reservation-item">
+        <div class="reservation-details">
+          <div class="reservation-court">
+            Court: {{ reservation.court.id }} ({{ reservation.court.get_court_type_display }})
+          </div>
+          <div class="reservation-info">
+            <span><i class="far fa-calendar-alt"></i> {{ reservation.appointment_start_time|date:"Y-m-d" }}</span>
+            <span><i class="far fa-clock"></i> {{ reservation.appointment_start_time|time:"H:i" }} - {{ reservation.appointment_end_time|time:"H:i" }}</span>
+          </div>
+        </div>
+        
+        <form class="cancel-form" action="{% url 'cancel_court_reservation' reservation.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Are you sure you want to cancel this reservation?');">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </form>
+      </li>
+    {% empty %}
+      <div class="empty-state">
+        <p>You have no scheduled court reservations.</p>
+      </div>
+    {% endfor %}
+  </ul>
+  
+  <a href="{% url 'after_login_customer_my_profile' %}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Back to Profile
+  </a>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Court reservations page loaded successfully');
+  });
+</script>
+{% endblock %}

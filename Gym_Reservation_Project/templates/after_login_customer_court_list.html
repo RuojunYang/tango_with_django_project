@@ -1,0 +1,163 @@
+{% extends "after_login_base_customer.html" %}
+{% load static %}
+
+{% block title %}GymHub - Court List{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Court list specific styles */
+  .court-section {
+    background-color: var(--content-bg);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .court-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .court-card {
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+  }
+  
+  .court-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .court-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+  }
+  
+  .court-type {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #e2f5e8;
+    color: #28a745;
+    border-radius: 15px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .court-time {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    color: var(--dark-gray);
+  }
+  
+  .court-time i {
+    margin-right: 8px;
+    color: var(--primary-color);
+  }
+  
+  .court-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .book-button, .review-button {
+    flex: 1;
+    display: inline-block;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .book-button {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .book-button:hover {
+    background-color: #218838;
+  }
+  
+  .review-button {
+    background-color: #f8f9fa;
+    color: var(--text-color);
+    border: 1px solid #ddd;
+  }
+  
+  .review-button:hover {
+    background-color: #e9ecef;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--dark-gray);
+    font-style: italic;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+    grid-column: 1 / -1;
+  }
+  
+  @media (max-width: 768px) {
+    .court-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="court-section">
+  <h1 class="section-title">Available Courts</h1>
+  
+  <div class="court-grid">
+    {% for court in courts %}
+      <div class="court-card">
+        <div class="court-name">Court: {{ court.id }}</div>
+        <div class="court-type">{{ court.get_court_type_display }}</div>
+        <div class="court-time">
+          <i class="far fa-clock"></i> Available from {{ court.work_start_time }} to {{ court.work_end_time }}
+        </div>
+        <div class="court-actions">
+          <a href="{% url 'after_login_customer_book_court' court.id %}" class="book-button">
+            <i class="fas fa-calendar-plus"></i> Book
+          </a>
+          <a href="{% url 'after_login_customer_court_review_list' court.id %}" class="review-button">
+            <i class="fas fa-star"></i> Reviews
+          </a>
+        </div>
+      </div>
+    {% empty %}
+      <div class="empty-state">
+        <p>No courts available at the moment. Please check back later.</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Court list page loaded successfully');
+  });
+</script>
+{% endblock %}
